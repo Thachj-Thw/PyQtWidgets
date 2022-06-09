@@ -196,16 +196,19 @@ class ItemShowWidget(QWidget):
 
         self.main_layout.addWidget(self.frame_button)
 
-        self._on_right_clicked = lambda: print("Right clicked")
-        self._on_left_clicked = lambda: print("Left clicked")
+        self._right_click_callback = lambda: None
+        self._left_click_callback = lambda: None
+
+        self._on_right_clicked = lambda: self._right_click_callback()
+        self._on_left_clicked = lambda: self._left_click_callback()
         self.buttonRight.clicked.connect(self._on_right_clicked)
         self.buttonLeft.clicked.connect(self._on_left_clicked)
 
     def setButtonRightClicked(self, callback):
-        self._on_right_clicked = callback
+        self._right_click_callback = callback
 
     def setButtonLeftClicked(self, callback):
-        self._on_left_clicked = callback
+        self._left_click_callback = callback
 
 
 class DialogShow(QDialog):

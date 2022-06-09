@@ -10,10 +10,17 @@ chromedriver_autoinstaller.install()
 
 
 def test(window, item, success, error, *args):
+
+    def on_click():
+        print("clicked")
+        nonlocal running
+        running = False
+
     try:
         running = True
         item.label.setText("test")
-
+        item.buttonRight.setText("Exit")
+        item.setButtonRightClicked(on_click)
         driver = chrome_in_window(window, scale=0.3)
         driver.get("https://www.google.com")
         while running:
