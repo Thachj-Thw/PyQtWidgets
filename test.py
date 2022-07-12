@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication
 from widgets import DialogShow
 import sys
 import time
@@ -9,27 +9,27 @@ import chromedriver_autoinstaller
 chromedriver_autoinstaller.install()
 
 
-def test(window, item, success, error, *args):
+class Test(object):
+    def __init__(self):
+        self.running = True
 
-    def on_click():
-        print("clicked")
-        nonlocal running
-        running = False
-
-    try:
-        running = True
+    def run(self, window, item, success, error):
         item.label.setText("test")
         item.buttonRight.setText("Exit")
-        item.setButtonRightClicked(on_click)
-        driver = chrome_in_window(window, scale=0.3)
-        driver.get("https://www.google.com")
-        while running:
-            time.sleep(.1)
-        driver.quit()
-    except Exception:
-        error.emit()
-    else:
-        success.emit()
+        item.setButtonRightClicked(self._on_click)
+        try:
+            driver = chrome_in_window(window, scale=0.3)
+            driver.get("https://www.google.com")
+            while self.running:
+                time.sleep(.2)
+            driver.quit()
+            success.emit()
+        except Exception as e:
+            error.emit(str(e))
+
+    def _on_click(self):
+        self.running = False
+
 
 def on_end():
     print(d.table.successCount())
@@ -40,5 +40,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     d = DialogShow(6)
     d.table.end.connect(on_end)
-    d.start(test, tuple())
+    d.start(lambda *args: Test().run(*args), tuple())
     app.exec_()
