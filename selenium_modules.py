@@ -3,7 +3,9 @@ from selenium import webdriver
 import psutil
 
 
-def chrome_in_window(window, executable_path="chromedriver", options=webdriver.ChromeOptions(), title_size=77, scale=1):
+def chrome_in_window(window, executable_path="chromedriver", options=None, title_size=77, scale=1):
+    if options is None:
+        options = webdriver.ChromeOptions()
     options.add_argument("--force-device-scale-factor=" + str(scale))
     driver = webdriver.Chrome(executable_path=executable_path, options=options)
     for child in psutil.Process(driver.service.process.pid).children():
